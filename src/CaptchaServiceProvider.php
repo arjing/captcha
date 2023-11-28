@@ -1,11 +1,12 @@
 <?php
-namespace Youngyezi\Captcha;
 
+namespace LumenUtils\Captcha;
 
 use Illuminate\Support\ServiceProvider;
+
 /**
  * Class CaptchaServiceProvider
- * @package Youngyezi\Captcha
+ * @package LumenUtils\Captcha
  */
 class CaptchaServiceProvider extends ServiceProvider
 {
@@ -18,9 +19,6 @@ class CaptchaServiceProvider extends ServiceProvider
     public function register()
     {
         // Bind captcha
-        $this->app->bind('captcha', function($app)
-        {
-            return new Captcha($app);
-        });
+        $this->app->bind('captcha', fn($app) => new Captcha($app));
     }
 }

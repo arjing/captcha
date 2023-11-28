@@ -1,75 +1,29 @@
 <?php
 
-namespace Youngyezi\Captcha;
-/**
- * Laravel 5 Captcha package
- *
- * @copyright Copyright (c) 2015 MeWebStudio
- * @version 2.x
- * @author Muharrem ERİN
- * @contact me@mewebstudio.com
- * @web http://www.mewebstudio.com
- * @date 2015-04-03
- * @license http://www.opensource.org/licenses/mit-license.php The MIT License
- */
+namespace LumenUtils\Captcha;
 
-use Exception;
-use Illuminate\Config\Repository;
-use Illuminate\Hashing\BcryptHasher as Hasher;
-use Illuminate\Filesystem\Filesystem;
 use Symfony\Component\Finder\SplFileInfo;
-use Illuminate\Support\Str;
-use Intervention\Image\ImageManager;
+
 /**
  * Class Captcha
- * @package Mews\Captcha
+ * @package LumenUtils\Captcha
  */
 class Captcha
 {
     /**
      * The application instance.
      *
-     * @var \Illuminate\Foundation\Application
+     * @var \Illuminate\Contracts\Foundation\Application
      */
     protected $app;
 
     /**
-     * @var Filesystem
-     */
-    protected $files;
-
-    /**
-     * @var Repository
-     */
-    protected $config;
-
-    /**
-     * @var ImageManager
-     */
-    protected $imageManager;
-
-    /**
-     * @var Session
-     */
-    protected $session;
-
-    /**
-     * @var Hasher
-     */
-    protected $hasher;
-
-    /**
-     * @var Str
-     */
-    protected $str;
-
-    /**
-     * @var ImageManager->canvas
+     * @var \Intervention\Image\Image
      */
     protected $canvas;
 
     /**
-     * @var ImageManager->image
+     * @var \Intervention\Image\Image
      */
     protected $image;
 
@@ -131,11 +85,6 @@ class Captcha
     /**
      * @var int
      */
-    protected $quality = 90;
-
-    /**
-     * @var int
-     */
     protected $sharpen = 0;
 
     /**
@@ -173,7 +122,7 @@ class Captcha
     /**
      * Create a new manager instance.
      *
-     * @param  \Illuminate\Foundation\Application  $app
+     * @param \Illuminate\Contracts\Foundation\Application $app
      * @return void
      */
     public function __construct($app)
@@ -186,22 +135,20 @@ class Captcha
      * Create captcha image
      *
      * @param string $config
-     * @param boolean $api
-     * @return ImageManager->response
+     * @return array
      */
-    public function create($config = 'default', $api = false)
+    public function create($config = 'default')
     {
         $this->includeConfig($config);
 
         $this->includeAssets();
 
-        if(!empty($this->fonts) && $this->fonts[0] instanceof SplFileInfo){
-            $this->fonts = array_map(function($file) {
-                return $file->getPathName();
-            }, $this->fonts);
+        if (!empty($this->fonts) && $this->fonts[0] instanceof SplFileInfo) {
+            $this->fonts = array_map(fn($file) => $file->getPathName(), $this->fonts);
         }
 
-        $this->fonts = array_values($this->fonts); //reset fonts array index
+        //reset fonts array index
+        $this->fonts = array_values($this->fonts);
 
         $generator = $this->generate();
 
@@ -236,7 +183,7 @@ class Captcha
         }
 
         if ($this->invert) {
-            $this->image->invert($this->invert);
+            $this->image->invert();
         }
 
         if ($this->blur) {
@@ -246,7 +193,7 @@ class Captcha
         return [
             'sensitive' => $generator['sensitive'],
             'key'       => $generator['key'],
-            'img'       => $this->image->encode('data-url')->encoded
+            'img'       => $this->image->encode('data-url')->encoded,
         ];
     }
 
@@ -257,7 +204,7 @@ class Captcha
      */
     protected function background()
     {
-        return $this->backgrounds[rand(0, count($this->backgrounds) - 1)];
+        return $this->backgrounds[mt_rand(0, count($this->backgrounds) - 1)];
     }
 
     /**
@@ -270,8 +217,8 @@ class Captcha
         $characters = str_split($this->characters);
 
         $bag = '';
-        for($i = 0; $i < $this->length; $i++) {
-            $bag .= $characters[rand(0, count($characters) - 1)];
+        for ($i = 0; $i < $this->length; $i++) {
+            $bag .= $characters[mt_rand(0, count($characters) - 1)];
         }
 
         $bag = $this->sensitive ? $bag : $this->app['Illuminate\Support\Str']->lower($bag);
@@ -281,7 +228,7 @@ class Captcha
         return [
             'value'     => $bag,
             'sensitive' => $this->sensitive,
-            'key'       => $hash
+            'key'       => $hash,
         ];
     }
 
@@ -293,11 +240,10 @@ class Captcha
         $marginTop = $this->image->height() / $this->length;
 
         $i = 0;
-        foreach(str_split($this->text) as $char)
-        {
-            $marginLeft = $this->textLeftPadding +  ($i * ($this->image->width() - $this->textLeftPadding) / $this->length);
+        foreach (str_split($this->text) as $char) {
+            $marginLeft = $this->textLeftPadding + ($i * ($this->image->width() - $this->textLeftPadding) / $this->length);
 
-            $this->image->text($char, $marginLeft, $marginTop, function($font) {
+            $this->image->text($char, $marginLeft, $marginTop, function ($font) {
                 $font->file($this->font());
                 $font->size($this->fontSize());
                 $font->color($this->fontColor());
@@ -317,7 +263,7 @@ class Captcha
      */
     protected function font()
     {
-        return $this->fonts[rand(0, count($this->fonts) - 1)];
+        return $this->fonts[mt_rand(0, count($this->fonts) - 1)];
     }
 
     /**
@@ -327,7 +273,7 @@ class Captcha
      */
     protected function fontSize()
     {
-        return rand($this->image->height() - 10, $this->image->height());
+        return mt_rand($this->image->height() - 10, $this->image->height());
     }
 
     /**
@@ -337,10 +283,10 @@ class Captcha
      */
     protected function fontColor()
     {
-        if ( ! empty($this->fontColors)) {
-            $color = $this->fontColors[rand(0, count($this->fontColors) - 1)];
+        if (!empty($this->fontColors)) {
+            $color = $this->fontColors[mt_rand(0, count($this->fontColors) - 1)];
         } else {
-            $color = [rand(0, 255), rand(0, 255), rand(0, 255)];
+            $color = [mt_rand(0, 255), mt_rand(0, 255), mt_rand(0, 255)];
         }
 
         return $color;
@@ -353,23 +299,22 @@ class Captcha
      */
     protected function angle()
     {
-        return rand((-1 * $this->angle), $this->angle);
+        return mt_rand((-1 * $this->angle), $this->angle);
     }
 
     /**
      * Random image lines
      *
-     * @return \Intervention\Image\ImageManager;
+     * @return \Intervention\Image\Image
      */
     protected function lines()
     {
-        for($i = 0; $i <= $this->lines; $i++)
-        {
+        for ($i = 0; $i <= $this->lines; $i++) {
             $this->image->line(
-                rand(0, $this->image->width()) + $i * rand(0, $this->image->height()),
-                rand(0, $this->image->height()),
-                rand(0, $this->image->width()),
-                rand(0, $this->image->height()),
+                mt_rand(0, $this->image->width()) + $i * mt_rand(0, $this->image->height()),
+                mt_rand(0, $this->image->height()),
+                mt_rand(0, $this->image->width()),
+                mt_rand(0, $this->image->height()),
                 function ($draw) {
                     $draw->color($this->fontColor());
                 }
@@ -400,13 +345,12 @@ class Captcha
 
         if ($this->app->config->has("captcha.{$config}")) {
 
-            foreach($this->app['config']["captcha.{$config}"] as $key => $val)
-            {
+            foreach ($this->app['config']["captcha.{$config}"] as $key => $val) {
                 $this->{$key} = $val;
             }
         }
 
-        $this->characters = config('captcha.characters','2346789abcdefghjmnpqrtuxyzABCDEFGHJMNPQRTUXYZ');
+        $this->characters = config('captcha.characters', '2346789abcdefghjmnpqrtuxyzABCDEFGHJMNPQRTUXYZ');
     }
 
     /**

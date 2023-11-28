@@ -1,26 +1,33 @@
 {
-    "name": "youngyezi/captcha",
-    "description": "Captcha for Lumen，Lumen 验证码",
-    "type": "library",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "youngyezi"
-        }
-    ],
-    "autoload": {
-        "psr-4": {
-            "Youngyezi\\Captcha\\": "src/"
-        }
-    },
-    "require": {
-        "php": ">=5.6.4",
-        "ext-gd": "*",
-        "illuminate/config": "~5.0",
-        "illuminate/filesystem": "~5.0",
-        "illuminate/support": "~5.0",
-        "illuminate/hashing": "~5.0",
-        "intervention/image": "~2.2"
-    },
-    "minimum-stability": "dev"
+  "name": "lumen-utils/captcha",
+  "description": "Captcha for Lumen，Lumen 验证码",
+  "type": "library",
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Lucifer"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "LumenUtils\\Captcha\\": "src/"
+    }
+  },
+  "require": {
+    "php": "^8.1",
+    "ext-gd": "*",
+    "illuminate/contracts": "^10",
+    "illuminate/config": "^10",
+    "illuminate/filesystem": "^10",
+    "illuminate/hashing": "^10",
+    "illuminate/support": "^10",
+    "intervention/image": "~2.2"
+  },
+  "config": {
+    "preferred-install": "dist",
+    "sort-packages": true,
+    "optimize-autoloader": true
+  }
 }

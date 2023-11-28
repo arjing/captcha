@@ -18,7 +18,7 @@ Captcha for Laravel 5 作者很久没有更新了，同时 Captcha 在 Lumen 有
 ## 安装
 
 
-	composer require youngyezi/captcha
+	composer require lumen-utils/captcha
 
 ## 使用
 
@@ -31,11 +31,11 @@ Captcha for Laravel 5 作者很久没有更新了，同时 Captcha 在 Lumen 有
 
 ### 注册服务 `bootstrap\app.php`
 
-	$app->register(Youngyezi\Captcha\CaptchaServiceProvider::class);
+	$app->register(LumenUtils\Captcha\CaptchaServiceProvider::class);
 
 
   	// 添加别名
-	$app->alias('captcha', 'Youngyezi\Captcha\CaptchaServiceProvider');
+	$app->alias('captcha', 'LumenUtils\Captcha\CaptchaServiceProvider');
 	
 ### 配置文件
 
