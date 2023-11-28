@@ -7,7 +7,7 @@
 
 ## update
 
-支持了lumen 6x
+支持了lumen 10x
 
 ## 源于
 
@@ -16,9 +16,9 @@ Captcha for Laravel 5 作者很久没有更新了，同时 Captcha 在 Lumen 有
 由此我基于原 Captcha 包进行了一些错误修复来集成 Lumen 。 同时删除了一些个人觉得太过冗余的东西，让使用更加方便和自由
 
 ## 安装
-
-
-	composer require lumen-utils/captcha
+```shell
+composer require lumen-utils/captcha
+```
 
 ## 使用
 
