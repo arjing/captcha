@@ -16,13 +16,13 @@
     }
   },
   "require": {
-    "php": "^8.1",
+    "php": "^8.3",
     "ext-gd": "*",
-    "illuminate/contracts": "^10",
-    "illuminate/config": "^10",
-    "illuminate/filesystem": "^10",
-    "illuminate/hashing": "^10",
-    "illuminate/support": "^10",
+    "illuminate/contracts": "^11",
+    "illuminate/config": "^11",
+    "illuminate/filesystem": "^11",
+    "illuminate/hashing": "^11",
+    "illuminate/support": "^11",
     "intervention/image": "~2.2"
   },
   "config": {
